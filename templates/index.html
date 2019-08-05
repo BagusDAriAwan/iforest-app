@@ -1,0 +1,70 @@
+
+{% extends 'templates.html' %}
+{% load static %}
+
+{% comment %} CSS {% endcomment %}
+{% block app_style %}
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %} "> {% endcomment %}
+{% endblock app_style %}
+
+{% comment %} CONTENT {% endcomment %}
+{% block content_header %}
+{% endblock content_header %}
+
+{% block content %}
+
+    <div class=" container mt-5">
+    {% comment %} header {% endcomment %}
+        <div class="row">
+          <div class="col-md-12 grid-margin text-center">
+             <h3>SELAMAT DATANG</h3>
+             <h5>Selamat menggunakan APKKS (Aplikasi klasifikasi Kanker Serviks)</h5>
+          </div>
+        </div>
+      <br>
+{% comment %} content {% endcomment %}
+              <div class="card">
+                <div class="card-header alert-warning" >
+                  <h6> <u> Deskripsi aplikasi</u>: </h6>
+                  <p>
+                  merupakan sebuah aplikasi untuk deteksi fraud kartu kredit menggunakan  algoritma <i>Isolation Forest</i>.
+                </div>
+                {% comment %}
+                <div class="card-body">
+                   <p> <i> Manual Book Random Forest</i></p> 
+                   <embed src="{% static 'pdf/rf.pdf' %}" type="application/pdf" width="100%" height="750px" class="responsive">
+                  <p> Referensi :</p>
+                  <ol>
+                    <li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html" target='_blank'>Random Forest Scikit Learn</a></li>
+                    <li><a href="https://scikit-learn.org/stable/_downloads/scikit-learn-docs.pdf" target='_blank'>Manual Book Scikit Learn</a></li>
+                    <li><a href="https://medium.com/@srnghn/the-mathematics-of-decision-trees-random-forest-and-feature-importance-in-scikit-learn-and-spark-f2861df67e3" target='_blank'>Feature Importance</a></li>
+                  </ol>
+              
+                </div>
+                {% endcomment %}
+              </div>
+
+    </div>
+    <div class="container"> <br><br><br></div>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br>
+{% endblock content %}
+
+
+{% comment %} JAVASCRIPTS {% endcomment %}
+{% block app_scripts %}
+    {% comment %} <script src="{% static 'buku/js/script.js' %}"></script> {% endcomment %}
+    <script>
+    (function($) {
+        'use strict';
+        $(function() {
+            $("#home").addClass('active');
+            
+            
+
+        });
+    })(jQuery);
+    </script>
+{% endblock app_scripts %}

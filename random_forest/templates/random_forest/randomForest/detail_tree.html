@@ -1,0 +1,135 @@
+{% extends 'templates.html' %}
+{% load static %}
+
+{% comment %} CSS {% endcomment %}
+{% block app_style %}
+    <link rel="stylesheet" href="{% static 'random_forest/css/style.css' %} ">
+    <link rel="stylesheet" href="{% static 'vendor/select-picker/bootstrap-select.min.css' %}">
+
+{% endblock app_style %}
+
+{% comment %} CONTENT {% endcomment %}
+{% block content_header %}
+{% endblock content_header %}
+
+{% block content %}
+    <div class=" container">
+    {% comment %} header {% endcomment %}
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between flex-wrap">
+              <div class="d-flex align-items-end flex-wrap">
+                <div class="mr-3 mr-xl-5 ml-4">
+                  <a class="btn btn-secondary" href="{% url 'rf:random-forest-index' %} ">
+                    <i class='mdi mdi-keyboard-backspace'></i> Semua {{page_role}}
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-end flex-wrap">
+                  <div class="mr-3 mr-xl-5">
+                    <h2>{{page_judul}}</h2>
+                    <p class="mb-md-0">{{page_deskripsi}} </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    <br>
+        <div class="text-center mb-4" >
+          <a class="btn btn-info" href="{% url 'rf:random-forest-detail' randomforest.id %}">
+              <i class='mdi mdi-arrow-left' ></i> 
+              Lihat  Detail Perhitungan&nbsp;
+          </a>
+          <a class="btn alert-secondary" href="#">
+              Lihat Hasil Pohon &nbsp;
+              <i class='mdi mdi-arrow-right' ></i> 
+          </a>
+        </div>
+        <div class="card">
+            <div class="card-header text-center alert-warning">
+             Cara Membaca Pohon Keputusan
+            </div>
+            <div class="card-body">
+            <div class="row">
+              
+            </div>
+            <img src="{% static 'random_forest/img/base_tree.png' %}" alt="alt" style="height:300px; float:left">
+              <div >
+                <ol >
+                  <li style="margin-left:320px">Dalam sebuah kotak yang memiliki dua anak kotak disebut node</li>
+                  <li style="margin-left:320px">Dalam node terdapat 4 elemen: nama fitur microRNA, gini, sample, value </li>
+                  <li style="margin-left:320px">Dalam sebuah kotak dan tidak memiliki anak lagi disebut daun</li>
+                  <li style="margin-left:320px">Dalam daun terdapat 3 elemen: gini, sample, value </li>
+                  <li style="margin-left:320px">Setiap Anak sebelah kiri, diperoleh dari persamaan microRNA yang bernilai benar/True</li>
+                  <li style="margin-left:320px">Setiap Anak sebelah kanan, diperoleh dari persamaan microRNA yang bernilai salah/False</li>
+                  <li style="margin-left:320px">Gini berisi nilai tingkat tidak murninya data </li>
+                  <li style="margin-left:320px">Sample berisi banyaknya data asli (data berulang dihitung 1)</li>
+                  <li style="margin-left:320px">Value berisi komposisi bootstrap sample dari data asli (semua data dihiting)</li>
+                  <li >Misalnya node teratas dengan syarat miR-217 <= 2.5, maka bila syarat dipenuhi akan mengakses anak kiri berupa node (miR-30e <= 13) dan bila syarat tidak dipenuhi mengakses anak kanan berupa daun</li>
+                  <li >Masih pada node teratas, gini 0.469 berarti 46 % data belum murni. Apabila diperoleh nilai 0 seperti anak sebelah kanan maka datanya pada node tersebut sudah murni</li>
+                  <li >Masih pada node teratas, sample 33 berarti data asli dan unik sebanyak 33 buah</li>
+                  <li >Masih pada node teratas, value [18,30] apabila dijumlahkan sebanyak 48 buah data yang berasal dari 33 buah data.accordion
+                      dari 48 buah beberapa data yang berulang. 18 menandakan banyak frekuensi data yang labelnya = 0 (Normal) dan 30 data labal = 1 (kanker)
+                  </li>
+                  <li><b>penting: apabila terjadi kebingungan pembacaan pohon keputusan. Untuk Gini,sample,value bisa kesampingkan dan berfokus pada persyaratan fitur microRNA dengan nilai ambang batasnya</b></li>
+                </ol>
+              </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header text-center alert-warning">
+                  <div class="form-group">
+                    <label for="no_pohon">PIlih Nomor Pohon :</label>
+                    <select name="no_pohon" id="no_pohon" class='selectpicker' data-live-search='true' data-width='100%'>
+                      <option value="">--Pilih Pohon--</option>
+                      <option value="1">1</option>
+                    </select>                       
+                  </div>
+                  <a id="submit-pohon" class="btn btn-success" href="{% url 'rf:random-forest-pohon' randomforest.id 999 %}" title='{{randomforest}}'>
+                    Submit
+                  </a>
+            </div>
+            <div class="card-body">
+              <h5>Pohon ke-{{no_pohon}}</h5>
+              <embed src="{% static 'random_forest/tree/tree.pdf' %}" type="application/pdf" width="100%" height="750px" class="responsive">
+              
+              {% comment %} <a href="{% static 'random_forest/tree/tree.pdf' %}">download</a> {% endcomment %}
+            </div>
+        </div>
+        
+
+    </div>
+
+{% endblock content %}
+
+{% comment %} JAVASCRIPTS {% endcomment %}
+{% block app_scripts %}
+    <script src="{% static 'random_forest/js/script.js' %}"></script>
+    <script src="{% static 'vendor/select-picker/bootstrap-select.min.js' %}"></script>
+
+    <script>
+        (function($) {
+        'use strict';
+            $(function() {
+                //$( "#dataset" ).addClass('active');
+                $("#random-forest").addClass('active');
+                $('#no_pohon').find('option').remove();
+                {% for i in n_pohon %}
+                  $('#no_pohon').append('<option value="{{i}}">{{i}}</option>');
+                {% endfor %}
+
+                $('body').on('click', '#submit-pohon', function (event) {
+                event.preventDefault();
+                var me = $(this),
+                    url = me.attr('href'),
+                    title = me.attr('title');
+                var no_pohon = $('#no_pohon').val();
+                url = url.replace('999',no_pohon)
+
+                window.location.replace(url);
+              });
+
+            });
+        })(jQuery);
+    </script>
+{% endblock app_scripts %}

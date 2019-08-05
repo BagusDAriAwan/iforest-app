@@ -1,0 +1,150 @@
+{% extends 'templates.html' %}
+{% load static %}
+
+{% comment %} CSS {% endcomment %}
+{% block app_style %}
+    <link rel="stylesheet" href="{% static 'random_forest/css/style.css' %} ">
+{% endblock app_style %}
+
+{% comment %} CONTENT {% endcomment %}
+{% block content_header %}
+{% endblock content_header %}
+
+{% block content %}
+    <div class=" container">
+    {% comment %} header {% endcomment %}
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="d-flex justify-content-between flex-wrap">
+              <div class="d-flex align-items-end flex-wrap">
+                <div class="mr-3 mr-xl-5 ml-4">
+                  <a class="btn btn-secondary" href="{% url 'if:iforest-index' %} ">
+                    <i class='mdi mdi-keyboard-backspace'></i> Semua {{page_role}}
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-end flex-wrap">
+                  <div class="mr-3 mr-xl-5">
+                    <h2>{{page_judul}}</h2>
+                    <p class="mb-md-0">{{page_deskripsi}} </p>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    <br>
+        <div class="card">
+            <div class="card-header">
+                <h2>{{iforest.dataset.nama}} </h2>
+                <p><u>Separator</u> : {{iforest.dataset.separator}} </p>
+                <p><u>Deskripsi</u> : {{iforest.dataset.deskripsi}} </p>
+               <a class="btn btn-primary" href="{% url 'if:dataset-detail' iforest.dataset.id %}" target='__blank' title='download file {{iforest.dataset}}'>View Dataset Detail <i class="mdi mdi-file-export text-white"></i></a>
+                                   
+            </div>
+            <div class="card-body">
+                <p><u> <a href="{{dataset.file_dataset.url}}" target='__blank'>Unduh data</a></u> </p>
+                <p><a href="#informasi-data">Informasi Data</a></p>
+                <p><a href="#evaluasi-kf-cv">Hasil Evalusasi</a></p>
+            </div>
+        </div>
+        {% comment %}  DF DESCRIBE{% endcomment %}
+        <div class="card" id="informasi-data">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                <h5>Informasi Data</h5>
+                <table border='0' style='font-size : 14px' class='table table-striped'>
+                    <tr>
+                        <th width='18%'>Atribut</th>
+                        <th width='3%' class='text-center'>|</th>
+                        <th>Nilai</th>
+                    </tr> 
+                    <tr>
+                        <td>Ukuran Data</td>
+                        <td width='3%' class='text-center'> : </td>
+                        <td>{{dataset_shape}} -> (baris,kolom)</td>
+                    </tr>
+                    <tr>
+                        <td colspan='3'>-----------------------------------------------------</td>
+                    </tr>
+                    <tr>
+                        <td>Kolom label (y)</td>
+                        <td width='5%' class='text-center'> : </td>
+                        <td>{{iforest.setlabel.kolom_label}}</td>
+                    </tr>
+                    <tr>
+                        <td>Nilai label/kelas</td>
+                        <td width='5%' class='text-center'> : </td>
+                        <td> {{label_label}}</td>
+                    </tr>
+                    <tr>
+                        <td>Frekuensi label/kelas</td>
+                        <td width='5%' class='text-center'> : </td>
+                        <td> {{label_frekuensi}}</td>
+                    </tr>
+                    <tr>
+                        <td>Fitur (X)</td>
+                        <td width='3%' class='text-center'> : </td>
+                        <td>{{iforest.setfitur.fitur}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% comment %}  DF DESCRIBE{% endcomment %}
+        <div class="card" id="evaluasi-kf-cv">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                <h5>Hasil Evaluasi</h5>
+                {{df_result|safe}}
+            </div>
+        </div>
+
+        <div class="card" id="confusion_matrix">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                <h5>Confusion Matrix</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="text-center">Validasi</h3>
+                        <img src="{% static cm_val %}" alt="not_found" style="width:100%;height:80%;margin-top:-10px;z-index:-999";/>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="text-center">Test</h3>
+                        <img src="{% static cm_test %}" alt="not_found" style="width:100%;height:80%;margin-top:-10px;z-index:-999";/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% comment %} JAVASCRIPTS {% endcomment %}
+{% block app_scripts %}
+    <script src="{% static 'iforest/js/script.js' %}"></script>
+    <script>
+        (function($) {
+        'use strict';
+            $(function() {
+                //$( "#dataset" ).addClass('active');
+                $("#iforest").addClass('active');
+
+                $('.dataframe-style').attr('border',0)
+                $('.dataframe-style').DataTable({
+                  "aLengthMenu": [
+                      [5, 10, 15, -1],
+                      [5, 10, 15, "All"]
+                  ],
+                  "iDisplayLength": 10,
+                  "language": {
+                      search: "search : "
+                  },
+                  searching: true, paging: true, info: true
+              });
+
+            });
+        })(jQuery);
+    </script>
+{% endblock app_scripts %}
